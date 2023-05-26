@@ -1,5 +1,8 @@
 from django.shortcuts import render
+from . import models
 
 
 def index(request):
-    return render(request, "contact/index.html")
+    contacts = models.Contact.objects.all()  # pylint: disable=E1101
+
+    return render(request, "contact/index.html", {'contacts': contacts})
