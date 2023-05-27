@@ -1,1 +1,1 @@
-from .contact_views import index
+from .contact_views import index, contact, search
