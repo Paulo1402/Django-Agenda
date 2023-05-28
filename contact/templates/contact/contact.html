@@ -10,6 +10,12 @@
   <p><b>Description: </b>{{ contact.description }}</p>
   <p><b>Category: </b>{{ contact.category.name }}</p>
 
-  {% include 'global/partials/_buttons_actions.html' %}
+  {% if contact.picture %}
+  <p>
+    <img src="{{ contact.picture.url }}" alt="{{ contact.first_name }} {{ contact.last_name }}">
+  </p>
+  {% endif %}
+
+  {% include 'global/partials/_buttons.html' %}
 </div>
 {% endblock content %}

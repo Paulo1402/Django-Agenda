@@ -11,7 +11,7 @@ def create(request: HttpRequest):
     # form_action = request.get_full_path()
 
     if request.method == "POST":
-        form = ContactForm(request.POST)
+        form = ContactForm(request.POST, request.FILES)
         context = {
             "form": form,
             "form_action": form_action,
@@ -37,7 +37,7 @@ def update(request: HttpRequest, contact_id: int):
     # form_action = request.get_full_path()
 
     if request.method == "POST":
-        form = ContactForm(request.POST, instance=contact)
+        form = ContactForm(request.POST, request.FILES, instance=contact)
         context = {
             "form": form,
             "form_action": form_action,
