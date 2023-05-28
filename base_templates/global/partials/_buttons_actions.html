@@ -1,0 +1,17 @@
+<form action="{% url 'contact:delete' contact.id %}" method="POST">
+  {% csrf_token %} 
+
+  {% if confirmation == 'no' %}
+  <div class="contact-links">
+    <p class="delete-warning">Deseja deletar esse contato?</p>
+    <a class="btn btn-link" href="{% url 'contact:contact' contact.id %}">No</a>
+    <input type="hidden" name="confirmation" value="yes" />
+    <button class="btn btn-link btn-delete" type="submit">Yes</button>
+  </div>
+  {% else %}
+  <div class="contact-links">
+    <a class="btn btn-link" href="{% url 'contact:update' contact.id %}">Update</a>
+    <button class="btn btn-link btn-delete" type="submit">Delete</button>
+  </div>
+  {% endif %}
+</form>
