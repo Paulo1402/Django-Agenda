@@ -274,7 +274,7 @@ svg {
 }
 
 .form-group .help-text,
-.form-group .help-text ~ ul {
+.form-group .help-text ul {
   margin: 0;
   font-size: var(--smallest-font-size);
   list-style: none;

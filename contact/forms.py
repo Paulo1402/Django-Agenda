@@ -4,6 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth import password_validation
 
 from contact.models import Contact
 
@@ -14,7 +15,8 @@ class ContactForm(forms.ModelForm):
             attrs={
                 "accept": "image/*",
             }
-        )
+        ),
+        required=False,
     )
 
     class Meta:
@@ -46,7 +48,7 @@ class ContactForm(forms.ModelForm):
 class RegisterForm(UserCreationForm):
     first_name = forms.CharField(required=True, min_length=3, label="Primeiro nome")
     last_name = forms.CharField(required=True, min_length=3, label="Segundo nome")
-    email = forms.EmailField(required=True, label='E-mail')
+    email = forms.EmailField(required=True, label="E-mail")
 
     class Meta:
         model = User
@@ -69,5 +71,98 @@ class RegisterForm(UserCreationForm):
                     "Um usuário com este endereço de email já existe.", code="invalid"
                 ),
             )
-            
+
         return email
+
+
+class RegisterUpdateForm(forms.ModelForm):
+    first_name = forms.CharField(
+        min_length=3,
+        max_length=30,
+        required=True,
+        help_text="Required.",
+        error_messages={"min_lenght": "Please, add more than 2 letters."},
+        label="Primeiro nome",
+    )
+    last_name = forms.CharField(
+        min_length=3,
+        max_length=30,
+        required=True,
+        help_text="Required.",
+        error_messages={"min_lenght": "Please, add more than 2 letters."},
+        label="Segundo nome",
+    )
+    password1 = forms.CharField(
+        label="Senha",
+        strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+        help_text=password_validation.password_validators_help_text_html(),
+        required=False,
+    )
+    password2 = forms.CharField(
+        label="Confirmação de senha",
+        strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+        help_text="Use the same password as before.",
+        required=False,
+    )
+    email = forms.EmailField(required=False, label="E-mail")
+
+    class Meta:
+        model = User
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+            "username",
+            "password1",
+            "password2",
+        )
+
+    def save(self, commit=True):
+        cleaned_data = self.cleaned_data
+        user = super().save(commit=False)
+
+        password = cleaned_data.get("password1")
+
+        if password:
+            user.set_password(password)
+
+        if commit:
+            user.save()
+
+        return user
+
+    def clean(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+
+        if (password1 or password2) and password1 != password2:
+            self.add_error("password2", ValidationError("Senhas não conferem!"))
+
+        return super().clean()
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        current_email = self.instance.email
+
+        if current_email != email and User.objects.filter(email=email).exists():
+            self.add_error(
+                "email",
+                ValidationError(
+                    "Um usuário com este endereço de email já existe.", code="invalid"
+                ),
+            )
+
+        return email
+
+    def clean_password1(self):
+        password1 = self.cleaned_data.get("password1")
+
+        if password1:
+            try:
+                password_validation.validate_password(password1)
+            except ValidationError as error:
+                self.add_error("password1", ValidationError(error))
+
+        return password1
