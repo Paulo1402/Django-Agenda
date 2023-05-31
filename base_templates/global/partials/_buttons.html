@@ -4,15 +4,15 @@
 
   {% if confirmation == 'no' %}
   <div class="contact-links">
-    <p class="delete-warning">Are you sure you want to delete this contact?</p>
-    <a class="btn btn-link" href="{% url 'contact:contact' contact.id %}">No</a>
+    <p class="delete-warning">Tem certeza que deseja deletar esse contato?</p>
+    <a class="btn btn-link" href="{% url 'contact:contact' contact.id %}">Não</a>
     <input type="hidden" name="confirmation" value="yes" />
-    <button class="btn btn-link btn-delete" type="submit">Yes</button>
+    <button class="btn btn-link btn-delete" type="submit">Sim</button>
   </div>
   {% else %}
   <div class="contact-links">
-    <a class="btn btn-link" href="{% url 'contact:update' contact.id %}">Update</a>
-    <button class="btn btn-link btn-delete" type="submit">Delete</button>
+    <a class="btn btn-link" href="{% url 'contact:update' contact.id %}">Atualizar</a>
+    <button class="btn btn-link btn-delete" type="submit">Deletar</button>
   </div>
   {% endif %}
 </form>

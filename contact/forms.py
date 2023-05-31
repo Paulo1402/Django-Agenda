@@ -17,6 +17,7 @@ class ContactForm(forms.ModelForm):
             }
         ),
         required=False,
+        label="Foto",
     )
 
     class Meta:
@@ -30,6 +31,14 @@ class ContactForm(forms.ModelForm):
             "category",
             "picture",
         )
+        labels = {
+            "first_name": "Nome",
+            "last_name": "Sobrenome",
+            "phone": "Telefone",
+            "email": "E-mail",
+            "description": "Descrição",
+            "category": "Categoria",
+        }
 
     def clean(self) -> Dict[str, Any]:
         fields = self.cleaned_data
@@ -46,8 +55,8 @@ class ContactForm(forms.ModelForm):
 
 
 class RegisterForm(UserCreationForm):
-    first_name = forms.CharField(required=True, min_length=3, label="Primeiro nome")
-    last_name = forms.CharField(required=True, min_length=3, label="Segundo nome")
+    first_name = forms.CharField(required=True, min_length=3, label="Nome")
+    last_name = forms.CharField(required=True, min_length=3, label="Sobrenome")
     email = forms.EmailField(required=True, label="E-mail")
 
     class Meta:
@@ -80,17 +89,17 @@ class RegisterUpdateForm(forms.ModelForm):
         min_length=3,
         max_length=30,
         required=True,
-        help_text="Required.",
-        error_messages={"min_lenght": "Please, add more than 2 letters."},
-        label="Primeiro nome",
+        help_text="Obrigatório.",
+        error_messages={"min_lenght": "Por favor, adicione mais do que 2 letras."},
+        label="Nome",
     )
     last_name = forms.CharField(
         min_length=3,
         max_length=30,
         required=True,
-        help_text="Required.",
-        error_messages={"min_lenght": "Please, add more than 2 letters."},
-        label="Segundo nome",
+        help_text="Obrigatório.",
+        error_messages={"min_lenght": "Por favor, adicione mais do que 2 letras."},
+        label="Sobrenome",
     )
     password1 = forms.CharField(
         label="Senha",
@@ -103,7 +112,7 @@ class RegisterUpdateForm(forms.ModelForm):
         label="Confirmação de senha",
         strip=False,
         widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
-        help_text="Use the same password as before.",
+        help_text="Use a mesma senha do campo anterior.",
         required=False,
     )
     email = forms.EmailField(required=False, label="E-mail")
@@ -138,7 +147,7 @@ class RegisterUpdateForm(forms.ModelForm):
         password2 = self.cleaned_data.get("password2")
 
         if (password1 or password2) and password1 != password2:
-            self.add_error("password2", ValidationError("Senhas não conferem!"))
+            self.add_error("password2", ValidationError("Senhas não coincidem!"))
 
         return super().clean()
 
