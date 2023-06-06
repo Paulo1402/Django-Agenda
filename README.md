@@ -11,6 +11,7 @@ Aplicação web para gerenciar contatos.
 ![preview](.github/create.png)
 
 ![preview](.github/contact.png)
+
 ## ⚙ Funcionalidades
 - Login e logout de usuário.
 - Paginamento de contatos.
